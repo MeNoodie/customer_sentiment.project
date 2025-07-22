@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Insights Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Customizing Tailwind's default font to use Inter and Poppins */
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2 {
+      font-family: 'Poppins', sans-serif;
+    }
+    /* Custom styling for scrollbar in chatbox */
+    #chatMessages::-webkit-scrollbar {
+      width: 8px;
+    }
+    #chatMessages::-webkit-scrollbar-track {
+      background: #1e293b; /* Darker background */
+      border-radius: 10px;
+    }
+    #chatMessages::-webkit-scrollbar-thumb {
+      background: #4A5568; /* Grayish thumb */
+      border-radius: 10px;
+    }
+    #chatMessages::-webkit-scrollbar-thumb:hover {
+      background: #6B7280; /* Lighter gray on hover */
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans leading-relaxed">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <h1 class="text-4xl font-extrabold mb-8 text-white tracking-tight">Dashboard to Assess Consumer Sentiments</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col justify-between border border-gray-700">
+        <div>
+          <h2 class="text-xl text-gray-300 mb-4 font-semibold">Engagement Insights</h2>
+          <div class="text-center mt-8">
+            <a href="/submit-feedback">
+              <button class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                💬 Give Your Feedback
+              </button>
+            </a>
+            <p class="text-sm text-green-300 mt-3 italic font-medium opacity-80">
+              For judges to provide feedback and review results.
+            </p>
+          </div>
+        </div>
+        <div class="mt-8 pt-6 border-t border-gray-700">
+          <h2 class="text-xl text-gray-300 mb-3 font-semibold">{{ data.total_messages }} Responses</h2>
+          <div class="space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">😊 Promoters</span>
+              <div class="flex-grow bg-gray-700 h-4 rounded-full overflow-hidden">
+                <div class="bg-green-500 h-full rounded-full transition-all duration-500 ease-out" style="width: {{ (data.engaged / data.total_messages * 100) | round(1) }}%"></div>
+              </div>
+              <span class="text-sm text-gray-400">{{ (data.engaged / data.total_messages * 100) | round(1) }}%</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-lg">😐 Passives</span>
+              <div class="flex-grow bg-gray-700 h-4 rounded-full overflow-hidden">
+                <div class="bg-yellow-400 h-full rounded-full transition-all duration-500 ease-out" style="width: {{ (data.neutral / data.total_messages * 100) | round(1) }}%"></div>
+              </div>
+              <span class="text-sm text-gray-400">{{ (data.neutral / data.total_messages * 100) | round(1) }}%</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-lg">😠 Detractors</span>
+              <div class="flex-grow bg-gray-700 h-4 rounded-full overflow-hidden">
+                <div class="bg-red-500 h-full rounded-full transition-all duration-500 ease-out" style="width: {{ (data.disengaged / data.total_messages * 100) | round(1) }}%"></div>
+              </div>
+              <span class="text-sm text-gray-400">{{ (data.disengaged / data.total_messages * 100) | round(1) }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col border border-gray-700">
+        <h2 class="text-xl text-gray-300 mb-4 font-semibold">Customer Engagement</h2>
+        <div class="flex-grow flex items-center justify-center">
+            <canvas id="engagementPie"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-gray-800 p-8 rounded-xl shadow-lg flex flex-col border border-gray-700">
+        <h2 class="text-xl text-gray-300 mb-4 font-semibold">Overall Sentiment</h2>
+        <div class="flex-grow flex items-center justify-center">
+            <canvas id="overallPie"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
+        <h2 class="text-xl text-gray-300 mb-4 font-semibold">User Activity vs Inactivity</h2>
+        <div class="h-72">
+          <canvas id="userActivityLine" class="h-full w-full"></canvas>
+        </div>
+      </div>
+      <div class="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
+        <h2 class="text-xl text-gray-300 mb-4 font-semibold">Top 5 Complaint Subjects</h2>
+        <div class="h-72">
+          <canvas id="barChart" class="h-full w-full"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+      <div class="bg-blue-600 p-6 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-200 ease-out">
+        <h2 class="text-sm text-blue-100 font-medium opacity-90">Total Messages</h2>
+        <p class="text-3xl font-bold text-white mt-1">{{ data.total_messages | default(0) }}</p>
+      </div>
+      <div class="bg-green-600 p-6 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-200 ease-out">
+        <h2 class="text-sm text-green-100 font-medium opacity-90">Positive Sentiment</h2>
+        <p class="text-3xl font-bold text-white mt-1">{{ data.positive | default(0) }}</p>
+      </div>
+      <div class="bg-red-600 p-6 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-200 ease-out">
+        <h2 class="text-sm text-red-100 font-medium opacity-90">Negative Sentiment</h2>
+        <p class="text-3xl font-bold text-white mt-1">{{ data.negative | default(0) }}</p>
+      </div>
+      <div class="bg-yellow-600 p-6 rounded-xl shadow-md transform hover:scale-105 transition-transform duration-200 ease-out">
+        <h2 class="text-sm text-yellow-100 font-medium opacity-90">Active Alerts</h2>
+        <p class="text-3xl font-bold text-white mt-1">{{ data.alerts | default(0) }}</p>
+      </div>
+    </div>
+
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
+      <h2 class="text-xl font-semibold mb-6 text-gray-300">Live Feedback Stream</h2>
+      <div class="space-y-4">
+        {% for msg in data.messages[:5] %}
+        <div class="p-4 rounded-lg border-l-4 
+          {% if msg.sentiment == 'Negative' %}border-red-500 bg-red-900/20{% elif msg.sentiment == 'Neutral' %}border-yellow-500 bg-yellow-900/20{% else %}border-green-500 bg-green-900/20{% endif %} 
+          shadow-md">
+          <p class="text-sm text-gray-400 mb-1">
+            <span class="font-medium text-gray-300">{{ msg.source }}</span> • 
+            <span class="text-xs">{{ msg.timestamp }}</span>
+          </p>
+          <p class="text-base text-gray-50 mb-2 break-words">{{ msg.feedback }}</p> 
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full 
+            {% if msg.sentiment == 'Negative' %}bg-red-700 text-white{% elif msg.sentiment == 'Neutral' %}bg-yellow-600 text-black{% else %}bg-green-700 text-white{% endif %}">
+            {{ msg.sentiment }}
+          </span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="fixed bottom-8 right-8 z-50">
+    <button onclick="toggleChat()" class="flex items-center gap-3 px-6 py-3 rounded-full shadow-xl bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 group backdrop-blur-md bg-opacity-90 border border-white/20">
+      <div class="text-2xl group-hover:animate-pulse">🤖</div>
+      <span class="text-lg tracking-wide">LIZA_AI</span>
+    </button>
+  </div>
+
+  <div id="chatBox" class="fixed bottom-32 right-8 w-80 h-[560px] bg-gray-900/95 backdrop-blur-md text-gray-100 rounded-3xl shadow-2xl border border-gray-700 hidden flex flex-col z-50 animate-slide-in overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-gray-700 bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-t-3xl">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">💬</span>
+        <h2 class="font-semibold text-lg tracking-wide">LIZA Support</h2>
+      </div>
+      <button onclick="toggleChat()" class="text-2xl hover:text-red-300 transition-colors duration-200">&times;</button>
+    </div>
+
+    <div class="flex-1 px-4 py-3 space-y-3 overflow-y-auto bg-gray-800 text-sm scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900" id="chatMessages">
+      <div class="bg-blue-700 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm">Hi! 👋 How can I help?</div>
+    </div>
+
+    <div class="p-3 border-t border-gray-700 bg-gray-800 flex items-center gap-3">
+      <input id="chatInput" type="text" placeholder="Type your issue..." class="flex-1 p-2.5 rounded-full bg-gray-700 border border-gray-600 text-sm text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" />
+      <button onclick="sendMessage()" class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white px-4 py-2 rounded-full text-sm font-semibold hover:from-indigo-700 hover:to-purple-800 transition-colors duration-200">Send</button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes slideIn {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-in { animation: slideIn 0.4s ease-out; }
+  </style>
+
+  <script>
+    // Ensure all chart options use text colors compatible with the dark theme
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false, // Allow charts to fill container
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#cbd5e1' // gray-300 for legend text
+                }
+            },
+            title: {
+                display: true,
+                color: '#cbd5e1' // gray-300 for title text
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)' // Lighter grid lines
+                },
+                ticks: {
+                    color: '#cbd5e1' // gray-300 for x-axis labels
+                },
+                title: {
+                    display: true,
+                    color: '#cbd5e1' // gray-300 for x-axis title
+                }
+            },
+            y: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)' // Lighter grid lines
+                },
+                ticks: {
+                    color: '#cbd5e1' // gray-300 for y-axis labels
+                },
+                title: {
+                    display: true,
+                    color: '#cbd5e1' // gray-300 for y-axis title
+                },
+                beginAtZero: true
+            }
+        }
+    };
+
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      const chatMessages = document.getElementById('chatMessages');
+      chatBox.classList.toggle('hidden');
+
+      if (!chatBox.classList.contains('hidden')) {
+        fetch('/api/suggestions')
+          .then(res => res.json())
+          .then(data => {
+            chatMessages.innerHTML = `<div class="bg-blue-700 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm">Hi! 👋 How can I help?</div>`; // Initial message
+            if (data.suggestions && Array.isArray(data.suggestions)) {
+              data.suggestions.forEach(text => {
+                chatMessages.innerHTML += `<div class="bg-emerald-600 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm">${text}</div>`; // Suggestions color
+              });
+            } else {
+                 chatMessages.innerHTML += `<div class="bg-red-700 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm">Error: Could not load suggestions.</div>`;
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          })
+          .catch(error => {
+            console.error("Error fetching suggestions:", error);
+            chatMessages.innerHTML += `<div class="bg-red-700 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm">Error loading suggestions. Please try again later.</div>`;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          });
+      }
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const msgBox = document.getElementById("chatMessages");
+      const userMsg = input.value.trim();
+      if (!userMsg) return;
+
+      const userDiv = document.createElement("div");
+      userDiv.className = "bg-purple-700 px-4 py-2 rounded-xl text-white self-end w-fit max-w-[85%] shadow-sm";
+      userDiv.innerText = userMsg;
+      msgBox.appendChild(userDiv);
+      msgBox.scrollTop = msgBox.scrollHeight;
+      input.value = "";
+
+      fetch("/api/liza-chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: userMsg })
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.replies && Array.isArray(data.replies)) {
+              data.replies.forEach(s => {
+                  const botDiv = document.createElement("div");
+                  botDiv.className = "bg-emerald-600 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm";
+                  botDiv.innerText = s;
+                  msgBox.appendChild(botDiv);
+              });
+          } else {
+              const botDiv = document.createElement("div");
+              botDiv.className = "bg-red-700 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm";
+              botDiv.innerText = "Error: Could not get a valid reply.";
+              msgBox.appendChild(botDiv);
+          }
+          msgBox.scrollTop = msgBox.scrollHeight;
+      })
+      .catch(error => {
+          console.error("Error fetching chat reply:", error);
+          const botDiv = document.createElement("div");
+          botDiv.className = "bg-red-700 px-4 py-2 rounded-xl text-white w-fit max-w-[85%] shadow-sm";
+          botDiv.innerText = "Error getting response. Please check backend.";
+          msgBox.appendChild(botDiv);
+          msgBox.scrollTop = msgBox.scrollHeight;
+      });
+    }
+
+    document.getElementById("chatInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+
+    // ==============================================================================
+    // --- FIX APPLIED HERE ---
+    // The chart data was being referenced using server-side Jinja2 syntax (e.g., 
+    // {{ data.engaged }}) inside a client-side fetch call, which doesn't work.
+    //
+    // The fix is to use the `apiData` object that is returned from the 
+    // `/api/sentiments` fetch call to populate the charts.
+    // ==============================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/api/sentiments')
+          .then(res => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! status: ${res.status}`);
+            }
+            return res.json();
+          })
+          .then(apiData => {
+            // Bar Chart for Top Subjects
+            const subjects = Object.keys(apiData.top_subjects);
+            const counts = Object.values(apiData.top_subjects);
+            new Chart(document.getElementById("barChart"), {
+              type: 'bar',
+              data: {
+                labels: subjects,
+                datasets: [{
+                  label: 'Top Complaint Subjects',
+                  backgroundColor: '#8B5CF6', // Purple-600
+                  data: counts
+                }]
+              },
+              options: {
+                  ...chartOptions,
+                  plugins: {
+                      ...chartOptions.plugins,
+                      title: { display: true, text: 'Top 5 Complaint Subjects', color: '#cbd5e1' }
+                  }
+              }
+            });
+
+            // Doughnut Chart for Engagement
+            new Chart(document.getElementById('engagementPie'), {
+              type: 'doughnut',
+              data: {
+                labels: ['Engaged', 'Neutral', 'Disengaged'],
+                datasets: [{
+                  data: [apiData.engaged, apiData.neutral, apiData.disengaged],
+                  backgroundColor: ['#10B981', '#F59E0B', '#EF4444']
+                }]
+              },
+              options: {
+                  ...chartOptions,
+                  plugins: { ...chartOptions.plugins, legend: { position: 'bottom', labels: { color: '#cbd5e1' } } }
+              }
+            });
+
+            // Doughnut Chart for Overall Sentiment
+            new Chart(document.getElementById('overallPie'), {
+              type: 'doughnut',
+              data: {
+                labels: ['Positive', 'Neutral', 'Negative'],
+                datasets: [{
+                  data: [apiData.sentiment.positive, apiData.sentiment.neutral, apiData.sentiment.negative],
+                  backgroundColor: ['#10B981', '#FCD34D', '#F87171']
+                }]
+              },
+              options: {
+                  ...chartOptions,
+                  plugins: { ...chartOptions.plugins, legend: { position: 'bottom', labels: { color: '#cbd5e1' } } }
+              }
+            });
+
+            // Line Chart for User Activity
+            new Chart(document.getElementById('userActivityLine'), {
+              type: 'line',
+              data: {
+                labels: apiData.user_activity.dates,
+                datasets: [
+                  {
+                    label: 'Active Users',
+                    data: apiData.user_activity.active,
+                    borderColor: '#6366F1',
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                  },
+                  {
+                    label: 'Inactive Users',
+                    data: apiData.user_activity.inactive,
+                    borderColor: '#EF4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                  }
+                ]
+              },
+              options: {
+                  ...chartOptions,
+                  scales: {
+                      x: { ...chartOptions.scales.x, title: { display: true, text: 'Date', color: '#cbd5e1' } },
+                      y: { ...chartOptions.scales.y, title: { display: true, text: 'Users', color: '#cbd5e1' }, beginAtZero: true }
+                  }
+              }
+            });
+          })
+          .catch(error => {
+            console.error("Error fetching sentiment data for charts:", error);
+            // Optionally, display a user-friendly error message in the chart areas
+            document.getElementById('engagementPie').parentElement.innerHTML = '<p class="text-red-400">Could not load chart data.</p>';
+            document.getElementById('overallPie').parentElement.innerHTML = '<p class="text-red-400">Could not load chart data.</p>';
+            document.getElementById('userActivityLine').parentElement.innerHTML = '<p class="text-red-400">Could not load chart data.</p>';
+            document.getElementById('barChart').parentElement.innerHTML = '<p class="text-red-400">Could not load chart data.</p>';
+          });
+    });
+  </script>
+</body>
+</html>

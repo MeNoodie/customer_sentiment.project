@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web/App Feedback - Motorola</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Navigation Buttons -->
+  <div class="flex justify-center gap-4 mt-6">
+     <a href="/dashboard_alt" class="px-5 py-2 rounded-full font-semibold shadow-md bg-red-600 text-white ring-1 ring-white">
+      Dashboard
+
+    </a>
+    <a href="/submit-feedback" class="px-5 py-2 rounded-full font-semibold shadow-md bg-blue-700 text-white ring-2 ring-white">
+      Web/App Feedback
+    </a>
+    <a href="/send-email-support" class="px-5 py-2 rounded-full font-semibold shadow-md bg-green-600 text-white hover:bg-green-700">
+      Email Support
+    </a>
+    <a href="/submit-ticket" class="px-5 py-2 rounded-full font-semibold shadow-md bg-orange-500 text-white hover:bg-orange-600">
+      Raise a Ticket
+    </a>
+  </div>
+
+  <!-- Feedback Section -->
+  <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6 mt-8 flex flex-col md:flex-row gap-6">
+    
+    <!-- Left: Product Image -->
+    <div class="md:w-1/3">
+  <img src="https://manikmobile.com/wp-content/uploads/2025/04/51Pn4nC2gL.jpg" 
+       alt="Motorola Edge 60 Fusion" 
+       class="rounded-lg w-full h-[500px] object-contain">
+</div>
+
+
+    <!-- Right: Product Details + Feedback -->
+    <div class="md:w-2/3 space-y-5">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">MOTOROLA Edge 60 Fusion 5G (Zephyr, 256 GB)</h1>
+        <div class="text-green-600 font-medium mt-1">⭐ 4.5 | 36,752 Ratings</div>
+        <div class="text-3xl font-bold text-green-700 mt-2">₹22,999</div>
+        <div class="text-gray-500 text-sm">11% off (MRP ₹25,999)</div>
+        <div class="bg-green-100 border-l-4 border-green-500 p-3 mt-2 text-sm rounded">
+          Extra ₹3000 off included<br>Secure delivery by 23 July
+        </div>
+      </div>
+
+      <!-- Feedback Form -->
+      <div class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">💬 Leave Your Feedback</h2>
+        
+        <div class="mb-3">
+          <label class="block text-gray-700 font-medium mb-1">Problem Type</label>
+          <select name="type" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="product">Product Issue</option>
+            <option value="service">Service Issue</option>
+            <option value="billing">Billing/Payment</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-gray-700 font-medium mb-1">⭐ Rate this product</label>
+          <select id="rating" class="w-full border-gray-300 rounded-md text-sm p-2">
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Good</option>
+            <option value="3">3 - Average</option>
+            <option value="2">2 - Poor</option>
+            <option value="1">1 - Very Poor</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-gray-700 font-medium mb-1">Subject</label>
+          <input type="text" name="subject" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-gray-700 font-medium mb-1">Your Experience</label>
+          <textarea id="feedback" rows="4" required placeholder="Write about your experience..." 
+                    class="w-full border border-gray-300 rounded-md p-2 text-sm"></textarea>
+        </div>
+
+        <button onclick="sendFeedback()"
+                class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded text-sm font-medium transition">
+          Submit Feedback
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    async function sendFeedback() {
+      const rating = document.getElementById('rating').value;
+      const feedback = document.getElementById('feedback').value;
+
+      if (!feedback.trim()) {
+        alert("⚠️ Please write some feedback before sending.");
+        return;
+      }
+
+      const response = await fetch("/submit-feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating, feedback })
+      });
+
+      if (response.ok) {
+        alert("✅ Thank you! Your feedback has been submitted.");
+        document.getElementById('feedback').value = "";
+      } else {
+        alert("❌ Failed to submit feedback. Try again.");
+      }
+    }
+  </script>
+
+</body>
+</html>

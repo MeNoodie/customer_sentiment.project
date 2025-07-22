@@ -1,0 +1,21 @@
+timestamp,source,type,rating,subject,feedback,user_id
+2025-07-21 10:15:23,Product Page,product,5,"Absolutely love it!","The new Motorola phone is fantastic. The camera quality is superb and the battery life is amazing. Best purchase this year!",192.168.1.101
+2025-07-21 11:05:14,Email,service,2,"Slow response time","I sent an email to support three days ago and still haven't heard back. Very frustrating experience.",192.168.1.102
+2025-07-21 12:30:55,Ticket,billing,1,"Double charged for my order!","I was charged twice for my order #12345. This is unacceptable! I need a refund immediately.",192.168.1.103
+2025-07-21 14:00:00,Product Page,product,4,"Great phone, minor issue","The phone is great overall, but the fingerprint sensor can be a bit slow to respond sometimes. Otherwise, very happy.",192.168.1.104
+2025-07-21 15:22:08,Ticket,other,3,"Question about warranty","Just wanted to know what the warranty covers. The process to find this info was not very clear on the website.",192.168.1.105
+2025-07-22 09:10:47,Email,product,1,"Phone arrived with a scratch","My brand new phone came out of the box with a noticeable scratch on the screen. Very disappointed with quality control.",192.168.1.106
+2025-07-22 09:45:13,Product Page,product,5,"Exceeded my expectations","The performance is so smooth and the display is beautiful. Motorola has really stepped up its game.",192.168.1.107
+2025-07-22 10:18:30,Ticket,service,4,"Support agent was very helpful","I had an issue with my account and the support agent (Sarah) was very patient and resolved it quickly. Great service!",192.168.1.108
+2025-07-22 11:55:01,Email,billing,3,"Payment failed multiple times","I tried to purchase the phone but my payment kept failing. The error message was not helpful. It was just an average experience.",192.168.1.109
+2025-07-22 13:04:19,Product Page,product,2,"Battery drains too fast","The battery life is not as advertised. I have to charge it twice a day with normal use. Not happy about this.",192.168.1.110
+2025-07-22 14:25:00,Ticket,product,4,"Feature request for camera app","It would be great if you could add a pro mode to the camera app. The current options are a bit basic, but the hardware is great.",192.168.1.111
+2025-07-22 15:01:50,Email,other,5,"Inquiry about corporate discounts","Your team responded very quickly to my inquiry about bulk orders. Very professional and helpful.",192.168.1.112
+2025-07-22 16:33:45,Product Page,service,1,"Delivery was delayed by a week","My delivery was supposed to arrive last Tuesday and it only came today. The tracking information was not updated.",192.168.1.113
+2025-07-22 17:12:11,Ticket,billing,4,"Refund processed quickly","I had to return an accessory and the refund was processed the very next day. I appreciate the efficiency.",192.168.1.114
+2025-07-22 18:00:29,Email,product,3,"The phone is just okay","It does the job, but there's nothing special about it. It feels like any other phone in this price range. It's okay.",192.168.1.115
+2025-07-23 09:05:15,Product Page,product,5,"Best phone I've ever owned!","From the design to the software, everything is perfect. I'm recommending it to all my friends.",192.168.1.116
+2025-07-23 10:30:00,Ticket,service,2,"Chatbot is useless","The chatbot on the website couldn't understand my simple question and I had to wait 20 minutes to talk to a human.",192.168.1.117
+2025-07-23 11:45:40,Email,billing,5,"Billing error fixed instantly","I noticed an error on my bill, contacted support, and they fixed it within 5 minutes. Amazing service!",192.168.1.118
+2025-07-23 12:50:00,Product Page,product,4,"Good value for the price","For what you pay, this phone is a great deal. It has features that are usually found in more expensive models.",192.168.1.119
+2025-07-23 14:00:00,Ticket,other,3,"Website navigation is confusing","I had a hard time finding the 'contact us' page. It should be more prominent on the homepage.",192.168.1.120

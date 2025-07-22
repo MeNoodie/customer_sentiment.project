@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raise a Ticket - Modern UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-image: url('https://images.unsplash.com/photo-1521791055366-0d553872125f');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 bg-opacity-80 backdrop-blur-lg min-h-screen">
+
+  <!-- 🔵 Feedback Navigation Buttons -->
+  <div class="flex justify-center gap-4 mt-4 mb-6">
+    <a href="/dashboard_alt" class="px-5 py-2 rounded-full font-semibold shadow-md bg-red-600 text-white ring-1 ring-white">
+      Dashboard
+    </a>
+    <a href="/submit-feedback" class="px-5 py-2 rounded-full font-semibold shadow-md transition
+       bg-gradient-to-r from-blue-600 to-blue-700 text-white
+       hover:from-blue-700 hover:to-blue-800">
+      Web/App Feedback
+    </a>
+    <a href="/send-email-support" class="px-5 py-2 rounded-full font-semibold shadow-md transition
+       bg-gradient-to-r from-green-600 to-emerald-600 text-white
+       hover:from-green-700 hover:to-emerald-700">
+      Email Support
+    </a>
+    <a href="/submit-ticket" class="px-5 py-2 rounded-full font-semibold shadow-md transition
+       bg-gradient-to-r from-yellow-500 to-orange-500 text-white
+       ring-2 ring-white">
+      Raise a Ticket
+    </a>
+  </div>
+
+  <!-- 💬 Page Content -->
+  <div class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- Left Side: Info Section -->
+    <div class="md:w-2/3 w-full p-8 text-white bg-black bg-opacity-60 flex items-center justify-center">
+      <div class="text-left space-y-6">
+        <h1 class="text-4xl font-bold">Application Logs & Info</h1>
+        <p class="text-lg">Track your product or service performance, issues, or activity logs here. This section can include application status, error logs, or general info for context.</p>
+      </div>
+    </div>
+
+    <!-- Right Side: Ticket Form -->
+    <div class="md:w-1/3 w-full bg-white p-8 shadow-2xl rounded-l-3xl">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Raise a Ticket</h2>
+      <form action="/submit-ticket" method="POST" enctype="multipart/form-data" class="space-y-5">
+
+        <div>
+          <label class="block text-gray-700">Ticket Type</label>
+          <select name="type" required class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="product">Product Issue</option>
+            <option value="service">Service Issue</option>
+            <option value="billing">Billing/Payment</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">⭐ Rate this product:</label>
+          <select name="rating" id="rating" class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Good</option>
+            <option value="3">3 - Average</option>
+            <option value="2">2 - Poor</option>
+            <option value="1">1 - Very Poor</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-gray-700">Subject</label>
+          <input type="text" name="subject" required class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-700">Description</label>
+          <textarea name="description" rows="4" required class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Please describe the issue in detail..."></textarea>
+        </div>
+
+        <div>
+          <label class="block text-gray-700">Attach Screenshot/File (optional)</label>
+          <input type="file" name="attachment" class="mt-1 w-full">
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">Submit Ticket</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

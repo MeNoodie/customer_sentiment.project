@@ -1,0 +1,46 @@
+# --- OpenAI API + Env Config ---
+openai
+python-dotenv
+
+# --- Web Framework ---
+flask
+
+# --- Data Handling ---
+pandas
+
+# --- Scheduling (every 48 hours) ---
+APScheduler
+
+# --- Visualization ---
+matplotlib
+seaborn
+wordcloud
+plotly
+
+# --- NLP Utilities (optional for fallback/extra)
+nltk
+textblob
+rake-nltk
+
+# --- OpenAI API + Env Config ---
+openai
+python-dotenv
+
+# --- Optional keyword extraction (optional) ---
+spacy
+keybert
+
+# --- If testing in notebooks ---
+ipykernel
+
+
+
+
+
+echo "# customer_sentiment.project" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/MeNoodie/customer_sentiment.project.git
+git push -u origin main
