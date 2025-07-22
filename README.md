@@ -1,7 +1,7 @@
 # 🧠 Customer Sentiment Watchdog — Hackathon Project 🧠
 
 ## 🚀 Problem Statement:  
-### **2. Customer Sentiment Watchdog for Support Teams**
+###  Customer Sentiment Watchdog for Support Teams**
 
 > _"It’s hard for CX teams to detect rising frustration or satisfaction trends across support channels (emails, chats, tickets)."_  
 
