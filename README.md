@@ -116,5 +116,4 @@ headers = {
 
 
 
-Let me know if you want a badge section (`Built With`, `Hackathon Submission`, etc.) or a zipped release for submission.
 
